@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Newtonsoft.Json;
 
 namespace ConsumeAPI_winform
 {
@@ -31,7 +32,10 @@ namespace ConsumeAPI_winform
 
         private async void BtnGo_Click(object sender, EventArgs e)
         {
-            TxtJsonResult.Text = await GetNotesJsonAsync();
+            string jsonAllNotes= await GetNotesJsonAsync();
+            TxtJsonResult.Text = jsonAllNotes;
+            List<Note> allNotes = JsonConvert.DeserializeObject<List<Note>>(jsonAllNotes);
+            DGVNotes.DataSource = allNotes;
         }
         private async Task<string> GetNotesJsonAsync()
         {

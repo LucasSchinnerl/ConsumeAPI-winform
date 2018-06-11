@@ -30,6 +30,8 @@
         {
             this.BtnGo = new System.Windows.Forms.Button();
             this.TxtJsonResult = new System.Windows.Forms.TextBox();
+            this.DGVNotes = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.DGVNotes)).BeginInit();
             this.SuspendLayout();
             // 
             // BtnGo
@@ -51,15 +53,25 @@
             this.TxtJsonResult.TabIndex = 1;
             this.TxtJsonResult.Text = "JsonResult";
             // 
+            // DGVNotes
+            // 
+            this.DGVNotes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.DGVNotes.Location = new System.Drawing.Point(530, 40);
+            this.DGVNotes.Name = "DGVNotes";
+            this.DGVNotes.Size = new System.Drawing.Size(240, 378);
+            this.DGVNotes.TabIndex = 2;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.DGVNotes);
             this.Controls.Add(this.TxtJsonResult);
             this.Controls.Add(this.BtnGo);
             this.Name = "Form1";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.DGVNotes)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -69,6 +81,7 @@
 
         private System.Windows.Forms.Button BtnGo;
         private System.Windows.Forms.TextBox TxtJsonResult;
+        private System.Windows.Forms.DataGridView DGVNotes;
     }
 }
 
