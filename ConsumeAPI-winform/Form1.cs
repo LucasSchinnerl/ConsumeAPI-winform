@@ -31,12 +31,13 @@ namespace ConsumeAPI_winform
 
         private async void BtnGo_Click(object sender, EventArgs e)
         {
-            LblResult.Text = await GetNotesJsonAsync();
+            TxtJsonResult.Text = await GetNotesJsonAsync();
         }
         private async Task<string> GetNotesJsonAsync()
         {
             Task<string> notesJson =client.GetStringAsync("api/note");
             return await notesJson;
         }
+
     }
 }
