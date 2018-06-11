@@ -7,14 +7,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace ConsumeAPI_winform
 {
     public partial class Form1 : Form
     {
+        HttpClient client;
         public Form1()
         {
             InitializeComponent();
+            init();
+        }
+
+        private void init()
+        {
+            client = new HttpClient();
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.BaseAddress = new Uri("http://localhost:3000/");
+        }
+
+        private async void BtnGo_Click(object sender, EventArgs e)
+        {
+            LblResult.Text = await GetNotesJsonAsync();
+        }
+        private async Task<string> GetNotesJsonAsync()
+        {
+            Task<string> notesJson =client.GetStringAsync("api/note");
+            return await notesJson;
         }
     }
 }
