@@ -35,6 +35,13 @@
             this.TxtNoteValue = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.BtnEditContent = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.BtnDelete = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DGVNotes)).BeginInit();
             this.SuspendLayout();
             // 
@@ -72,8 +79,10 @@
             // 
             this.TxtNoteID.Location = new System.Drawing.Point(549, 53);
             this.TxtNoteID.Name = "TxtNoteID";
+            this.TxtNoteID.ReadOnly = true;
             this.TxtNoteID.Size = new System.Drawing.Size(65, 20);
             this.TxtNoteID.TabIndex = 3;
+            this.TxtNoteID.TextChanged += new System.EventHandler(this.TxtNoteID_TextChanged);
             // 
             // TxtNoteValue
             // 
@@ -100,13 +109,83 @@
             this.label2.TabIndex = 4;
             this.label2.Text = "value";
             // 
+            // BtnEditContent
+            // 
+            this.BtnEditContent.Location = new System.Drawing.Point(549, 90);
+            this.BtnEditContent.Name = "BtnEditContent";
+            this.BtnEditContent.Size = new System.Drawing.Size(75, 23);
+            this.BtnEditContent.TabIndex = 5;
+            this.BtnEditContent.Text = "edit";
+            this.BtnEditContent.UseVisualStyleBackColor = true;
+            this.BtnEditContent.Click += new System.EventHandler(this.BtnEditContent_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(549, 163);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(65, 20);
+            this.textBox1.TabIndex = 3;
+            this.textBox1.TextChanged += new System.EventHandler(this.TxtNoteID_TextChanged);
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(620, 163);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(135, 20);
+            this.textBox2.TabIndex = 3;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(546, 147);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(15, 13);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "id";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(617, 147);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(33, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "value";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(549, 200);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "edit";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.BtnEditContent_Click);
+            // 
+            // BtnDelete
+            // 
+            this.BtnDelete.Location = new System.Drawing.Point(643, 90);
+            this.BtnDelete.Name = "BtnDelete";
+            this.BtnDelete.Size = new System.Drawing.Size(75, 23);
+            this.BtnDelete.TabIndex = 5;
+            this.BtnDelete.Text = "delete";
+            this.BtnDelete.UseVisualStyleBackColor = true;
+            this.BtnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.BtnDelete);
+            this.Controls.Add(this.BtnEditContent);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.TxtNoteValue);
             this.Controls.Add(this.TxtNoteID);
             this.Controls.Add(this.DGVNotes);
@@ -129,6 +208,13 @@
         private System.Windows.Forms.TextBox TxtNoteValue;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button BtnEditContent;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button BtnDelete;
     }
 }
 
