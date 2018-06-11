@@ -43,5 +43,15 @@ namespace ConsumeAPI_winform
             return await notesJson;
         }
 
+        private void DGVNotes_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var selectedRowIndex = e.RowIndex;
+            var dgv = (DataGridView)sender;
+            var selectedId = dgv.Rows[selectedRowIndex].Cells[0].Value.ToString();
+            var selectedMessage = dgv.Rows[selectedRowIndex].Cells[1].Value.ToString();
+            TxtNoteID.Text = selectedId;
+            TxtNoteValue.Text = selectedMessage;
+
+        }
     }
 }
