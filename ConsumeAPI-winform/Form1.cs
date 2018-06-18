@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -36,23 +33,87 @@ namespace ConsumeAPI_winform
                 TxtNoteIDEditOrDelete,
                 TxtNoteValueEditOrDelete};
         }
+        #region Create
+        /// <summary>
+        /// Create a new record and give feedback about success
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void BtnCreate_Click(object sender, EventArgs e)
+        {
+            string message = TxtNoteValueCreate.Text;
+            StringContent content = PrepareContentForCreating(message);
+            HttpResponseMessage response = await client.PostAsync($"api/note", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                return;
+            }
+            string resultJson = await response.Content.ReadAsStringAsync();
+            if (resultJson.StartsWith("ERROR"))         // the response can be successful, even if the creating fails
+            {
+                return;
+            }
+            Note createdNote = JsonConvert.DeserializeObject<Note>(resultJson); // here we get only a single object back
+            await GiveFeedbackAfterCreating(createdNote);
+
+        }
+        /// <summary>
+        /// Prepare the HttpContent needed for PostAsync
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private static StringContent PrepareContentForCreating(string message)
+        {
+            Note newNote = new Note
+            {
+                Id = 0,                 // we treat 0 like "none given"
+                Message = message
+            };
+            string jsonString = JsonConvert.SerializeObject(newNote);
+            // Erzeugen von Httpcontent
+            // encoding ist (vermutlich) nicht wirklich wichtig, aber mediaType!!
+            StringContent content = new StringContent(jsonString, UnicodeEncoding.UTF8, "application/json");
+            return content;
+        }
+        /// <summary>
+        /// Give visual feedback about successful creation
+        /// </summary>
+        /// <param name="createdNote"></param>
+        /// <returns></returns>
+        private async Task GiveFeedbackAfterCreating(Note createdNote)
+        {
+            string msg = createdNote.Id.ToString() + ":" + createdNote.Message;
+
+            MessageBox.Show($"erfolgreich erzeugt: {msg}", "New Note");
+            UpdateDGVNotes(await GetNotesJsonAsync());
+            ClearInputFieldsAndSelectNone();
+        }
+        #endregion Create
+      
+        #region Editing
+        /// <summary>
+        /// Send edited content and give Feedback 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void BtnEditContent_Click(object sender, EventArgs e)
         {
             string message = TxtNoteValueEditOrDelete.Text;
             string idString = TxtNoteIDEditOrDelete.Text;
 
             Note changedNote = new Note();
-            changedNote.Id = Convert.ToInt32(idString);
+            changedNote.Id = Convert.ToInt32(idString);         // alternative way for populating the object
             changedNote.Message = message;
             string changedNoteJson = JsonConvert.SerializeObject(changedNote);
-            TxtJsonResult.Text = changedNoteJson;
+            TxtJsonResult.Text = changedNoteJson;               // not really needed..., just for testing
+            // here, again, we need the media type
             StringContent content = new StringContent(changedNoteJson, UnicodeEncoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync($"api/note/{changedNote.Id}", content);
             if (!response.IsSuccessStatusCode)
             {
                 return;
             }
-            string resultJson = await response.Content.ReadAsStringAsync();
+            string resultJson = await response.Content.ReadAsStringAsync();     // we want a string
             Note returnedNote = JsonConvert.DeserializeObject<Note>(resultJson);
             foreach (var item in allNotes)
             {
@@ -69,22 +130,15 @@ namespace ConsumeAPI_winform
             }
             ClearInputFieldsAndSelectNone();
         }
-
-         private static StringContent PrepareContentForCreating(string message)
-        {
-            Note newNote = new Note
-            {
-                Id = 0,
-                Message = message
-            };
-            string jsonString = JsonConvert.SerializeObject(newNote);
-            // Erzeugen von Httpcontent
-            // encoding ist nicht wirklich wichtig, aber mediaType!!
-            StringContent content = new StringContent(jsonString, UnicodeEncoding.UTF8, "application/json");
-            return content;
-        }
+        #endregion Editing
 
 
+        #region Delete
+        /// <summary>
+        /// delete a selected record and give feedback about success
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void BtnDelete_Click(object sender, EventArgs e)
         {
             string id = TxtNoteIDEditOrDelete.Text;
@@ -94,7 +148,7 @@ namespace ConsumeAPI_winform
             {
                 return;
             }
-            string resultJson = await response.Content.ReadAsStringAsync();
+            string resultJson = await response.Content.ReadAsStringAsync();// response contains a list of deleted items, even if only one
             List<Note> deletedNotes = JsonConvert.DeserializeObject<List<Note>>(resultJson);
             string msg = string.Empty;
             foreach (Note delNote in deletedNotes)
@@ -105,55 +159,26 @@ namespace ConsumeAPI_winform
             UpdateDGVNotes(await GetNotesJsonAsync());
             ClearInputFieldsAndSelectNone();
         }
-
-        private async void BtnCreate_Click(object sender, EventArgs e)
-        {
-            string message = TxtNoteValueCreate.Text;
-            StringContent content = PrepareContentForCreating(message);
-            HttpResponseMessage response = await client.PostAsync($"api/note", content);
-            if (!response.IsSuccessStatusCode)
-            {
-                return;
-            }
-            string resultJson = await response.Content.ReadAsStringAsync();
-            if (resultJson.StartsWith("ERROR"))
-            {
-                return;
-            }
-            Note createdNote = JsonConvert.DeserializeObject<Note>(resultJson);
-            await GiveFeedbackAfterCreating(createdNote);
-
-        }
-
-        private async Task GiveFeedbackAfterCreating(Note createdNote)
-        {
-            string msg = createdNote.Id.ToString() + ":" + createdNote.Message;
-
-            MessageBox.Show($"erfolgreich erzeugt: {msg}", "New Note");
-            UpdateDGVNotes(await GetNotesJsonAsync());
-            ClearInputFieldsAndSelectNone();
-        }
+        #endregion Delete
 
 
+        /// <summary>
+        /// Retrieve and display all records
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void BtnGo_Click(object sender, EventArgs e)
         {
             string jsonAllNotes = await GetNotesJsonAsync();
             TxtJsonResult.Text = jsonAllNotes;
             UpdateDGVNotes(jsonAllNotes);
         }
-
+        #region Tools
         private void UpdateDGVNotes(string jsonAllNotes)
         {
             allNotes = JsonConvert.DeserializeObject<List<Note>>(jsonAllNotes);
             DGVNotes.DataSource = allNotes;
         }
-
-        private async Task<string> GetNotesJsonAsync()
-        {
-            Task<string> notesJson = client.GetStringAsync("api/note");
-            return await notesJson;
-        }
-
         private void DGVNotes_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             var selectedRowIndex = e.RowIndex;
@@ -171,6 +196,17 @@ namespace ConsumeAPI_winform
                 c.Text = "";
             DGVNotes.ClearSelection();
         }
+
+        #endregion Tools
+
+        #region Get
+        private async Task<string> GetNotesJsonAsync()
+        {
+            Task<string> notesJson = client.GetStringAsync("api/note");
+            return await notesJson;
+        }
+        #endregion Get
+
 
     }
 }
