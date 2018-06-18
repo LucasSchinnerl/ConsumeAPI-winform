@@ -70,6 +70,21 @@ namespace ConsumeAPI_winform
             ClearInputFieldsAndSelectNone();
         }
 
+         private static StringContent PrepareContentForCreating(string message)
+        {
+            Note newNote = new Note
+            {
+                Id = 0,
+                Message = message
+            };
+            string jsonString = JsonConvert.SerializeObject(newNote);
+            // Erzeugen von Httpcontent
+            // encoding ist nicht wirklich wichtig, aber mediaType!!
+            StringContent content = new StringContent(jsonString, UnicodeEncoding.UTF8, "application/json");
+            return content;
+        }
+
+
         private async void BtnDelete_Click(object sender, EventArgs e)
         {
             string id = TxtNoteIDEditOrDelete.Text;
@@ -94,15 +109,7 @@ namespace ConsumeAPI_winform
         private async void BtnCreate_Click(object sender, EventArgs e)
         {
             string message = TxtNoteValueCreate.Text;
-            Note newNote = new Note
-            {
-                Id = 0,
-                Message = message
-            };
-            string jsonString = JsonConvert.SerializeObject(newNote);
-            // Erzeugen von Httpcontent
-            // encoding ist nicht wirklich wichtig, aber mediaType!!
-            StringContent content = new StringContent(jsonString, UnicodeEncoding.UTF8, "application/json");
+            StringContent content = PrepareContentForCreating(message);
             HttpResponseMessage response = await client.PostAsync($"api/note", content);
             if (!response.IsSuccessStatusCode)
             {
@@ -114,13 +121,19 @@ namespace ConsumeAPI_winform
                 return;
             }
             Note createdNote = JsonConvert.DeserializeObject<Note>(resultJson);
+            await GiveFeedbackAfterCreating(createdNote);
+
+        }
+
+        private async Task GiveFeedbackAfterCreating(Note createdNote)
+        {
             string msg = createdNote.Id.ToString() + ":" + createdNote.Message;
 
             MessageBox.Show($"erfolgreich erzeugt: {msg}", "New Note");
             UpdateDGVNotes(await GetNotesJsonAsync());
             ClearInputFieldsAndSelectNone();
-
         }
+
 
         private async void BtnGo_Click(object sender, EventArgs e)
         {
