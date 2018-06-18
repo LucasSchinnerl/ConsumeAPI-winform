@@ -31,16 +31,16 @@
             this.BtnGo = new System.Windows.Forms.Button();
             this.TxtJsonResult = new System.Windows.Forms.TextBox();
             this.DGVNotes = new System.Windows.Forms.DataGridView();
-            this.TxtNoteID = new System.Windows.Forms.TextBox();
-            this.TxtNoteValue = new System.Windows.Forms.TextBox();
+            this.TxtNoteIDEditOrDelete = new System.Windows.Forms.TextBox();
+            this.TxtNoteValueEditOrDelete = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.BtnEditContent = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.TxtNoteIDCreate = new System.Windows.Forms.TextBox();
+            this.TxtNoteValueCreate = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.BtnCreate = new System.Windows.Forms.Button();
             this.BtnDelete = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.DGVNotes)).BeginInit();
             this.SuspendLayout();
@@ -75,21 +75,21 @@
             this.DGVNotes.TabIndex = 2;
             this.DGVNotes.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DGVNotes_CellClick);
             // 
-            // TxtNoteID
+            // TxtNoteIDEditOrDelete
             // 
-            this.TxtNoteID.Location = new System.Drawing.Point(549, 53);
-            this.TxtNoteID.Name = "TxtNoteID";
-            this.TxtNoteID.ReadOnly = true;
-            this.TxtNoteID.Size = new System.Drawing.Size(65, 20);
-            this.TxtNoteID.TabIndex = 3;
-            this.TxtNoteID.TextChanged += new System.EventHandler(this.TxtNoteID_TextChanged);
+            this.TxtNoteIDEditOrDelete.Location = new System.Drawing.Point(549, 53);
+            this.TxtNoteIDEditOrDelete.Name = "TxtNoteIDEditOrDelete";
+            this.TxtNoteIDEditOrDelete.ReadOnly = true;
+            this.TxtNoteIDEditOrDelete.Size = new System.Drawing.Size(65, 20);
+            this.TxtNoteIDEditOrDelete.TabIndex = 3;
+            this.TxtNoteIDEditOrDelete.TextChanged += new System.EventHandler(this.TxtNoteID_TextChanged);
             // 
-            // TxtNoteValue
+            // TxtNoteValueEditOrDelete
             // 
-            this.TxtNoteValue.Location = new System.Drawing.Point(620, 53);
-            this.TxtNoteValue.Name = "TxtNoteValue";
-            this.TxtNoteValue.Size = new System.Drawing.Size(135, 20);
-            this.TxtNoteValue.TabIndex = 3;
+            this.TxtNoteValueEditOrDelete.Location = new System.Drawing.Point(620, 53);
+            this.TxtNoteValueEditOrDelete.Name = "TxtNoteValueEditOrDelete";
+            this.TxtNoteValueEditOrDelete.Size = new System.Drawing.Size(135, 20);
+            this.TxtNoteValueEditOrDelete.TabIndex = 3;
             // 
             // label1
             // 
@@ -119,20 +119,21 @@
             this.BtnEditContent.UseVisualStyleBackColor = true;
             this.BtnEditContent.Click += new System.EventHandler(this.BtnEditContent_Click);
             // 
-            // textBox1
+            // TxtNoteIDCreate
             // 
-            this.textBox1.Location = new System.Drawing.Point(549, 163);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(65, 20);
-            this.textBox1.TabIndex = 3;
-            this.textBox1.TextChanged += new System.EventHandler(this.TxtNoteID_TextChanged);
+            this.TxtNoteIDCreate.Location = new System.Drawing.Point(549, 163);
+            this.TxtNoteIDCreate.Name = "TxtNoteIDCreate";
+            this.TxtNoteIDCreate.ReadOnly = true;
+            this.TxtNoteIDCreate.Size = new System.Drawing.Size(65, 20);
+            this.TxtNoteIDCreate.TabIndex = 3;
+            this.TxtNoteIDCreate.TextChanged += new System.EventHandler(this.TxtNoteID_TextChanged);
             // 
-            // textBox2
+            // TxtNoteValueCreate
             // 
-            this.textBox2.Location = new System.Drawing.Point(620, 163);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(135, 20);
-            this.textBox2.TabIndex = 3;
+            this.TxtNoteValueCreate.Location = new System.Drawing.Point(620, 163);
+            this.TxtNoteValueCreate.Name = "TxtNoteValueCreate";
+            this.TxtNoteValueCreate.Size = new System.Drawing.Size(135, 20);
+            this.TxtNoteValueCreate.TabIndex = 3;
             // 
             // label3
             // 
@@ -152,15 +153,15 @@
             this.label4.TabIndex = 4;
             this.label4.Text = "value";
             // 
-            // button1
+            // BtnCreate
             // 
-            this.button1.Location = new System.Drawing.Point(549, 200);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "edit";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.BtnEditContent_Click);
+            this.BtnCreate.Location = new System.Drawing.Point(549, 200);
+            this.BtnCreate.Name = "BtnCreate";
+            this.BtnCreate.Size = new System.Drawing.Size(75, 23);
+            this.BtnCreate.TabIndex = 5;
+            this.BtnCreate.Text = "new record";
+            this.BtnCreate.UseVisualStyleBackColor = true;
+            this.BtnCreate.Click += new System.EventHandler(this.BtnCreate_Click);
             // 
             // BtnDelete
             // 
@@ -177,17 +178,17 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.BtnCreate);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.BtnDelete);
             this.Controls.Add(this.BtnEditContent);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.TxtNoteValueCreate);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.TxtNoteValue);
-            this.Controls.Add(this.TxtNoteID);
+            this.Controls.Add(this.TxtNoteIDCreate);
+            this.Controls.Add(this.TxtNoteValueEditOrDelete);
+            this.Controls.Add(this.TxtNoteIDEditOrDelete);
             this.Controls.Add(this.DGVNotes);
             this.Controls.Add(this.TxtJsonResult);
             this.Controls.Add(this.BtnGo);
@@ -204,16 +205,16 @@
         private System.Windows.Forms.Button BtnGo;
         private System.Windows.Forms.TextBox TxtJsonResult;
         private System.Windows.Forms.DataGridView DGVNotes;
-        private System.Windows.Forms.TextBox TxtNoteID;
-        private System.Windows.Forms.TextBox TxtNoteValue;
+        private System.Windows.Forms.TextBox TxtNoteIDEditOrDelete;
+        private System.Windows.Forms.TextBox TxtNoteValueEditOrDelete;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button BtnEditContent;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox TxtNoteIDCreate;
+        private System.Windows.Forms.TextBox TxtNoteValueCreate;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button BtnCreate;
         private System.Windows.Forms.Button BtnDelete;
     }
 }

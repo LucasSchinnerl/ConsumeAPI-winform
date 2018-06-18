@@ -56,8 +56,8 @@ namespace ConsumeAPI_winform
             var dgv = (DataGridView)sender;
             var selectedId = dgv.Rows[selectedRowIndex].Cells[0].Value.ToString();
             var selectedMessage = dgv.Rows[selectedRowIndex].Cells[1].Value.ToString();
-            TxtNoteID.Text = selectedId;
-            TxtNoteValue.Text = selectedMessage;
+            TxtNoteIDEditOrDelete.Text = selectedId;
+            TxtNoteValueEditOrDelete.Text = selectedMessage;
 
         }
 
@@ -69,8 +69,8 @@ namespace ConsumeAPI_winform
         private async void BtnEditContent_Click(object sender, EventArgs e)
         {
             int id;
-            string message = TxtNoteValue.Text;
-            string idString = TxtNoteID.Text;
+            string message = TxtNoteValueEditOrDelete.Text;
+            string idString = TxtNoteIDEditOrDelete.Text;
 
             if (int.TryParse(idString, out id))
             {
@@ -105,9 +105,9 @@ namespace ConsumeAPI_winform
 
         private async void BtnDelete_Click(object sender, EventArgs e)
         {
-            string id = TxtNoteID.Text;
-            string message = TxtNoteValue.Text;
-            string idString = TxtNoteID.Text;
+            string id = TxtNoteIDEditOrDelete.Text;
+            string message = TxtNoteValueEditOrDelete.Text;
+            //string idString = TxtNoteIDEditOrDelete.Text;
             HttpResponseMessage response = await client.DeleteAsync($"api/note/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -121,6 +121,34 @@ namespace ConsumeAPI_winform
                 msg += delNote.Id.ToString() + ":" + delNote.Message;
             }
             MessageBox.Show($"erfolgreich gelöscht: {msg}", "Delete");
+            UpdateDGVNotes(await GetNotesJsonAsync());
+
+        }
+
+        private async void BtnCreate_Click(object sender, EventArgs e)
+        {
+            //string id = TxtNoteIDCreate.Text;
+            string message = TxtNoteValueCreate.Text;
+            Note newNote = new Note
+            {
+                Message = message
+            };
+            string jsonString= JsonConvert.SerializeObject(newNote);
+            StringContent content = new StringContent(jsonString, UnicodeEncoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PostAsync($"api/note",content);
+            if (!response.IsSuccessStatusCode)
+            {
+                return;
+            }
+            string resultJson = await response.Content.ReadAsStringAsync();
+            if (resultJson.StartsWith("ERROR"))
+            {
+                return;
+            }
+            Note createdNote = JsonConvert.DeserializeObject<Note>(resultJson);
+            string msg = createdNote.Id.ToString() + ":" + createdNote.Message;
+            
+            MessageBox.Show($"erfolgreich erzeugt: {msg}", "New Note");
             UpdateDGVNotes(await GetNotesJsonAsync());
 
         }
