@@ -17,7 +17,7 @@ namespace ConsumeAPI_winform
     {
         HttpClient client;
         List<Note> allNotes;
-        List<Control> inputFields;
+        List<Control> inputFields;  // zum leichteren Löschen des Inhalts der textboxen
         public Form1()
         {
             InitializeComponent();
@@ -36,37 +36,6 @@ namespace ConsumeAPI_winform
                 TxtNoteIDEditOrDelete,
                 TxtNoteValueEditOrDelete};
         }
-
-        private async void BtnGo_Click(object sender, EventArgs e)
-        {
-            string jsonAllNotes = await GetNotesJsonAsync();
-            TxtJsonResult.Text = jsonAllNotes;
-            UpdateDGVNotes(jsonAllNotes);
-        }
-
-        private void UpdateDGVNotes(string jsonAllNotes)
-        {
-            allNotes = JsonConvert.DeserializeObject<List<Note>>(jsonAllNotes);
-            DGVNotes.DataSource = allNotes;
-        }
-
-        private async Task<string> GetNotesJsonAsync()
-        {
-            Task<string> notesJson = client.GetStringAsync("api/note");
-            return await notesJson;
-        }
-
-        private void DGVNotes_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            var selectedRowIndex = e.RowIndex;
-            var dgv = (DataGridView)sender;
-            var selectedId = dgv.Rows[selectedRowIndex].Cells[0].Value.ToString();
-            var selectedMessage = dgv.Rows[selectedRowIndex].Cells[1].Value.ToString();
-            TxtNoteIDEditOrDelete.Text = selectedId;
-            TxtNoteValueEditOrDelete.Text = selectedMessage;
-
-        }
-
         private async void BtnEditContent_Click(object sender, EventArgs e)
         {
             string message = TxtNoteValueEditOrDelete.Text;
@@ -105,7 +74,6 @@ namespace ConsumeAPI_winform
         {
             string id = TxtNoteIDEditOrDelete.Text;
             string message = TxtNoteValueEditOrDelete.Text;
-            //string idString = TxtNoteIDEditOrDelete.Text;
             HttpResponseMessage response = await client.DeleteAsync($"api/note/{id}");
             if (!response.IsSuccessStatusCode)
             {
@@ -125,13 +93,15 @@ namespace ConsumeAPI_winform
 
         private async void BtnCreate_Click(object sender, EventArgs e)
         {
-            //string id = TxtNoteIDCreate.Text;
             string message = TxtNoteValueCreate.Text;
             Note newNote = new Note
             {
+                Id = 0,
                 Message = message
             };
             string jsonString = JsonConvert.SerializeObject(newNote);
+            // Erzeugen von Httpcontent
+            // encoding ist nicht wirklich wichtig, aber mediaType!!
             StringContent content = new StringContent(jsonString, UnicodeEncoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync($"api/note", content);
             if (!response.IsSuccessStatusCode)
@@ -151,6 +121,37 @@ namespace ConsumeAPI_winform
             ClearInputFieldsAndSelectNone();
 
         }
+
+        private async void BtnGo_Click(object sender, EventArgs e)
+        {
+            string jsonAllNotes = await GetNotesJsonAsync();
+            TxtJsonResult.Text = jsonAllNotes;
+            UpdateDGVNotes(jsonAllNotes);
+        }
+
+        private void UpdateDGVNotes(string jsonAllNotes)
+        {
+            allNotes = JsonConvert.DeserializeObject<List<Note>>(jsonAllNotes);
+            DGVNotes.DataSource = allNotes;
+        }
+
+        private async Task<string> GetNotesJsonAsync()
+        {
+            Task<string> notesJson = client.GetStringAsync("api/note");
+            return await notesJson;
+        }
+
+        private void DGVNotes_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var selectedRowIndex = e.RowIndex;
+            var dgv = (DataGridView)sender;
+            var selectedId = dgv.Rows[selectedRowIndex].Cells[0].Value.ToString();
+            var selectedMessage = dgv.Rows[selectedRowIndex].Cells[1].Value.ToString();
+            TxtNoteIDEditOrDelete.Text = selectedId;
+            TxtNoteValueEditOrDelete.Text = selectedMessage;
+
+        }
+
         void ClearInputFieldsAndSelectNone()
         {
             foreach (Control c in inputFields)
