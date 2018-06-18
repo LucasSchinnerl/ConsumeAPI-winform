@@ -17,6 +17,7 @@ namespace ConsumeAPI_winform
     {
         HttpClient client;
         List<Note> allNotes;
+        List<Control> inputFields;
         public Form1()
         {
             InitializeComponent();
@@ -29,6 +30,11 @@ namespace ConsumeAPI_winform
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.BaseAddress = new Uri("http://localhost:3000/");
+            inputFields = new List<Control>{
+                TxtNoteIDCreate,
+                TxtNoteValueCreate,
+                TxtNoteIDEditOrDelete,
+                TxtNoteValueEditOrDelete};
         }
 
         private async void BtnGo_Click(object sender, EventArgs e)
@@ -61,46 +67,38 @@ namespace ConsumeAPI_winform
 
         }
 
-        private void TxtNoteID_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private async void BtnEditContent_Click(object sender, EventArgs e)
         {
-            int id;
             string message = TxtNoteValueEditOrDelete.Text;
             string idString = TxtNoteIDEditOrDelete.Text;
 
-            if (int.TryParse(idString, out id))
+            Note changedNote = new Note();
+            changedNote.Id = Convert.ToInt32(idString);
+            changedNote.Message = message;
+            string changedNoteJson = JsonConvert.SerializeObject(changedNote);
+            TxtJsonResult.Text = changedNoteJson;
+            StringContent content = new StringContent(changedNoteJson, UnicodeEncoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PutAsync($"api/note/{changedNote.Id}", content);
+            if (!response.IsSuccessStatusCode)
             {
-                Note changedNote = new Note();
-                changedNote.Id = id;
-                changedNote.Message = message;
-                string changedNoteJson = JsonConvert.SerializeObject(changedNote);
-                TxtJsonResult.Text = changedNoteJson;
-                StringContent content = new StringContent(changedNoteJson);
-                HttpResponseMessage response = await client.PutAsync($"api/note/{changedNote.Id}", content);
-                //if (!response.IsSuccessStatusCode)
-                //{
-                //    return;
-                //}
-                //string resultJson = await response.Content.ReadAsStringAsync();
-                //Note returnedNote = JsonConvert.DeserializeObject<Note>(resultJson);
-                //foreach (var item in allNotes)
-                //{
-                //    if (item.Id == returnedNote.Id)
-                //        item.Message = returnedNote.Message;
-                //}
-                DGVNotes.DataSource = allNotes;
-                foreach (DataGridViewRow row in DGVNotes.Rows)
+                return;
+            }
+            string resultJson = await response.Content.ReadAsStringAsync();
+            Note returnedNote = JsonConvert.DeserializeObject<Note>(resultJson);
+            foreach (var item in allNotes)
+            {
+                if (item.Id == returnedNote.Id)
+                    item.Message = returnedNote.Message;
+            }
+            DGVNotes.DataSource = allNotes;
+            foreach (DataGridViewRow row in DGVNotes.Rows)
+            {
+                if (row.Cells[0].Value.ToString() == idString)
                 {
-                    if (row.Cells[0].Value.ToString()==idString)
-                    {
-                        row.DefaultCellStyle.BackColor = Color.Green;
-                    }
+                    row.DefaultCellStyle.BackColor = Color.Green;
                 }
             }
+            ClearInputFieldsAndSelectNone();
         }
 
         private async void BtnDelete_Click(object sender, EventArgs e)
@@ -115,14 +113,14 @@ namespace ConsumeAPI_winform
             }
             string resultJson = await response.Content.ReadAsStringAsync();
             List<Note> deletedNotes = JsonConvert.DeserializeObject<List<Note>>(resultJson);
-            string msg=string.Empty;
+            string msg = string.Empty;
             foreach (Note delNote in deletedNotes)
             {
                 msg += delNote.Id.ToString() + ":" + delNote.Message;
             }
             MessageBox.Show($"erfolgreich gelöscht: {msg}", "Delete");
             UpdateDGVNotes(await GetNotesJsonAsync());
-
+            ClearInputFieldsAndSelectNone();
         }
 
         private async void BtnCreate_Click(object sender, EventArgs e)
@@ -133,9 +131,9 @@ namespace ConsumeAPI_winform
             {
                 Message = message
             };
-            string jsonString= JsonConvert.SerializeObject(newNote);
+            string jsonString = JsonConvert.SerializeObject(newNote);
             StringContent content = new StringContent(jsonString, UnicodeEncoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync($"api/note",content);
+            HttpResponseMessage response = await client.PostAsync($"api/note", content);
             if (!response.IsSuccessStatusCode)
             {
                 return;
@@ -147,10 +145,18 @@ namespace ConsumeAPI_winform
             }
             Note createdNote = JsonConvert.DeserializeObject<Note>(resultJson);
             string msg = createdNote.Id.ToString() + ":" + createdNote.Message;
-            
+
             MessageBox.Show($"erfolgreich erzeugt: {msg}", "New Note");
             UpdateDGVNotes(await GetNotesJsonAsync());
+            ClearInputFieldsAndSelectNone();
 
         }
+        void ClearInputFieldsAndSelectNone()
+        {
+            foreach (Control c in inputFields)
+                c.Text = "";
+            DGVNotes.ClearSelection();
+        }
+
     }
 }

@@ -82,7 +82,6 @@
             this.TxtNoteIDEditOrDelete.ReadOnly = true;
             this.TxtNoteIDEditOrDelete.Size = new System.Drawing.Size(65, 20);
             this.TxtNoteIDEditOrDelete.TabIndex = 3;
-            this.TxtNoteIDEditOrDelete.TextChanged += new System.EventHandler(this.TxtNoteID_TextChanged);
             // 
             // TxtNoteValueEditOrDelete
             // 
@@ -126,7 +125,6 @@
             this.TxtNoteIDCreate.ReadOnly = true;
             this.TxtNoteIDCreate.Size = new System.Drawing.Size(65, 20);
             this.TxtNoteIDCreate.TabIndex = 3;
-            this.TxtNoteIDCreate.TextChanged += new System.EventHandler(this.TxtNoteID_TextChanged);
             // 
             // TxtNoteValueCreate
             // 
